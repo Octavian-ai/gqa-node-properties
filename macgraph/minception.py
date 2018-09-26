@@ -9,24 +9,25 @@ The mini-inception (mi) library
 
 This is inspired by Google's inception network 
 and DARTS architecture search. I didn't get fancy
-on the bilevel optimization, so let's see how it goes!!
+on the bilevel optimization, so let's see if it still works.
 
 '''
 
-MI_ACTIVATIONS = 5
+ACTIVATION_FNS = {
+	"tanh": tf.tanh,
+	"relu": tf.nn.relu,
+	"sigmoid": tf.nn.sigmoid,
+	"abs": absu,
+	"tanh_abs": lambda x: tf.concat([tf.tanh(x), absu(x)], axis=-1),
+	"id": tf.identity,
+	"mi": mi_activation,
+}
 
 
-def mi_activation(tensor, tap=False):
+def mi_activation(tensor, tap=False, axis=1):
 	with tf.name_scope("mi_activation"):
-		activations = [
-			tf.nn.relu, 
-			lambda x: tf.nn.relu(x) + tf.nn.relu(-x), # Abslu... yeah..
-			tf.tanh, 
-			tf.nn.sigmoid, 
-			tf.identity, 
-		]
 
-		axis = 1
+		activations = [v for k, v in ACTIVATION_FNS.items() if k != "mi"]
 		
 		choice = tf.get_variable("darts_choice", [len(activations)])
 		choice = tf.nn.softmax(choice)

@@ -55,30 +55,23 @@ def read_cell(args, features, vocab_embedding, in_control_state, in_question_tok
 
 	with tf.name_scope("read_cell"):
 
-		tap_attns = []
-		tap_table = None
-
-		taps = {}
-		reads = []
-		attn_focus = []
+		taps = {} # For visualisation of attention
 
 		# --------------------------------------------------------------------------
 		# Read data
 		# --------------------------------------------------------------------------
 
-		in_signal = in_control_state
-		
 		read, taps["kb_attn"], _, _ = read_from_table_with_embedding(
 			args, 
 			features, 
 			vocab_embedding, 
-			in_signal, 
+			in_control_state, 
 			noun="kb_node"
 		)
 
 		read_words = tf.reshape(read, [features["d_batch_size"], args["kb_node_width"], args["embed_width"]])	
-		read, taps["kb_node_word_attn"] = attention_by_index(in_signal, read_words)
-		read = tf.concat([read, in_signal], -1)
+		read, taps["kb_node_word_attn"] = attention_by_index(in_control_state, read_words)
+		read = tf.concat([read, in_control_state], -1)
 		read = tf.layers.dense(read, args["read_width"], activation=ACTIVATION_FNS[args["read_activation"]])
 		
 		# --------------------------------------------------------------------------
@@ -86,9 +79,9 @@ def read_cell(args, features, vocab_embedding, in_control_state, in_question_tok
 		# --------------------------------------------------------------------------
 	
 		out_data = read
-	
+
 		# Residual skip connection
-		# out_data = tf.concat([read, in_signal], -1)
+		# out_data = tf.concat([read, in_control_state], -1)
 		
 		# for i in range(args["read_layers"]):
 		# 	out_data = tf.layers.dense(out_data, args["read_width"])
