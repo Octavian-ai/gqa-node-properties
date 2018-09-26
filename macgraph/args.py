@@ -105,7 +105,7 @@ def get_args(extend=lambda parser:None, argv=None):
 	parser.add_argument('--control-heads',	           	type=int, default=1,	help="The number of control question-word attention heads")
 	parser.add_argument('--control-dropout',	        type=float, default=0.0, help="Dropout on the control unit")
 
-	parser.add_argument('--output-activation',			type=str, default="tanh_abs", choices=ACTIVATION_FNS.keys())
+	parser.add_argument('--output-activation',			type=str, default="id", choices=ACTIVATION_FNS.keys())
 	parser.add_argument('--output-layers',				type=int, default=2)
 	parser.add_argument('--output-classes',	       		type=int, default=128,    help="The number of different possible answers (e.g. answer classes). Currently tied to vocab size since we attempt to tokenise the output.")
 
