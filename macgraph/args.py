@@ -7,11 +7,8 @@ import tensorflow as tf
 
 from .minception import ACTIVATION_FNS
 
-
 global_args = {}
 
-def absu(x):
-	return tf.nn.relu(x) + tf.nn.relu(-x)
 
 def generate_args_derivatives(args):
 

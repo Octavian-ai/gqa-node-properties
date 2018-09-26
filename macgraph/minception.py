@@ -13,21 +13,24 @@ on the bilevel optimization, so let's see if it still works.
 
 '''
 
-ACTIVATION_FNS = {
+
+def absu(x):
+	return tf.nn.relu(x) + tf.nn.relu(-x)
+
+standard_activations = {
 	"tanh": tf.tanh,
 	"relu": tf.nn.relu,
 	"sigmoid": tf.nn.sigmoid,
 	"abs": absu,
 	"tanh_abs": lambda x: tf.concat([tf.tanh(x), absu(x)], axis=-1),
-	"id": tf.identity,
-	"mi": mi_activation,
+	"id": tf.identity
 }
 
 
 def mi_activation(tensor, tap=False, axis=1):
 	with tf.name_scope("mi_activation"):
 
-		activations = [v for k, v in ACTIVATION_FNS.items() if k != "mi"]
+		activations = list(standard_activations.values())
 		
 		choice = tf.get_variable("darts_choice", [len(activations)])
 		choice = tf.nn.softmax(choice)
@@ -44,6 +47,8 @@ def mi_activation(tensor, tap=False, axis=1):
 		else:
 			return t
 
+
+ACTIVATION_FNS = {**standard_activations, "mi": mi_activation}
 
 def mi_activation_control(tensor, control=None, tap=False):
 	with tf.name_scope("mi_activation"):
