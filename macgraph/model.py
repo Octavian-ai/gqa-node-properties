@@ -90,8 +90,6 @@ def model_fn(features, labels, mode, params):
 			norms = [tf.norm(i, 2) for i in gradients if i is not None]
 
 			tf.summary.scalar("learning_rate", learning_rate, family="hyperparam")
-			tf.summary.scalar("current_step", global_step, family="hyperparam")
-			tf.summary.histogram("grad_norm", norms)
 			tf.summary.scalar("grad_norm", tf.reduce_max(norms), family="hyperparam")
 
 		optimizer = tf.train.AdamOptimizer(learning_rate)
