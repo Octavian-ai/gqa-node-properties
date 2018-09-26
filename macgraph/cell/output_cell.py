@@ -1,0 +1,21 @@
+
+import tensorflow as tf
+
+from ..args import ACTIVATION_FNS
+
+
+def output_cell(args, features, in_question_state, in_read, in_control_state):
+
+	with tf.name_scope("output_cell"):
+
+		v = in_read
+
+		for i in range(args["output_layers"]):
+			v = tf.layers.dense(v, args["output_classes"])
+			v = ACTIVATION_FNS[args["output_activation"]](v)
+
+		v = tf.layers.dense(v, args["output_classes"])
+
+		finished = tf.greater(tf.layers.dense(v, 1, kernel_initializer=tf.zeros_initializer()), 0.5)
+
+		return v, finished
