@@ -46,7 +46,7 @@ def read_cell(args, features, vocab_embedding, in_control_state, in_question_tok
 
 		taps = {} # For visualisation of attention
 
-		read, taps["kb_attn"], _, _ = read_from_table_with_embedding(
+		read, taps["kb_node_attn"], _, _ = read_from_table_with_embedding(
 			args, 
 			features, 
 			vocab_embedding, 

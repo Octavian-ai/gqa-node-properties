@@ -72,7 +72,7 @@ def predict(args, cmd_args):
 		print(emoji, " ", answer_part)
 
 		for control_head in row["question_word_attn"]:
-			print(' '.join(color_text(row["src"], control_head)))
+			print("Question: ", ' '.join(color_text(row["src"], control_head)))
 
 		noun = "kb_node"
 		db = [vocab.prediction_value_to_string(kb_row) for kb_row in row[f"{noun}s"]]

@@ -4,7 +4,7 @@ import tensorflow as tf
 from ..util import *
 from ..attention import *
 
-def control_cell(args, features, in_control_state, in_question_state, in_question_tokens):
+def control_cell(args, features, in_question_state, in_question_tokens):
 	"""
 	Build a control cell
 
@@ -19,17 +19,14 @@ def control_cell(args, features, in_control_state, in_question_state, in_questio
 	with tf.name_scope("control_cell"):
 
 		control_shape = [ features["d_batch_size"], args["control_width"] ]
-		in_control_state = dynamic_assert_shape(in_control_state, control_shape)
-		
-		all_input = tf.concat([in_question_state, in_control_state], -1, name="all_input")
-
 		question_token_width = args["input_width"]
 
 		attention_calls = []
 		queries = []
 
 		for i in range(args["control_heads"]):
-			question_token_query = tf.layers.dense(all_input, question_token_width)
+			in_signal = tf.layers.dense(in_question_state, args["control_width"])
+			question_token_query = tf.layers.dense(in_signal, question_token_width)
 			question_token_query = tf.layers.dense(question_token_query, question_token_width)
 			question_token_query = dynamic_assert_shape(question_token_query, 
 				[ features["d_batch_size"], question_token_width ]

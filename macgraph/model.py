@@ -7,6 +7,7 @@ from .cell import *
 from .util import *
 from .hooks import *
 from .input import *
+from .encoder import *
 
 def model_fn(features, labels, mode, params):
 
@@ -46,8 +47,7 @@ def model_fn(features, labels, mode, params):
 	question_tokens, question_state = encode_input(args, features, vocab_embedding)
 
 	# The control state is focusing on one of the input tokens
-	out_control_state, tap_question_attn = control_cell(args, features, 
-		in_control_state, question_state, question_tokens)
+	out_control_state, tap_question_attn = control_cell(args, features, question_state, question_tokens)
 
 	# The read cell pulls out the relevant node property from the graph
 	read, read_taps = read_cell(
