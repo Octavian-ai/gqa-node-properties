@@ -22,7 +22,6 @@ class MACCell(tf.nn.rnn_cell.RNNCell):
 
 	def get_taps(self):
 		return {
-			"finished":				1,
 			"question_word_attn": 	self.args["control_heads"] * self.features["d_src_len"],
 			"kb_node_attn": 		self.args["kb_node_width"] * self.args["embed_width"],
 			"kb_node_word_attn": 	self.args["kb_node_width"],
@@ -30,16 +29,14 @@ class MACCell(tf.nn.rnn_cell.RNNCell):
 
 
 
-	def __call__(self, inputs, in_state):
-		"""Run this RNN cell on inputs, starting from the given state.
+	def __call__(self, in_state):
+		"""Run this RNN cell, starting from the given state.
 		
 		Args:
-			inputs: `2-D` tensor with shape `[batch_size, input_size]`.
 			state: if `self.state_size` is an integer, this should be a `2-D Tensor`
 				with shape `[batch_size, self.state_size]`.	Otherwise, if
 				`self.state_size` is a tuple of integers, this should be a tuple
 				with shapes `[batch_size, s] for s in self.state_size`.
-			scope: VariableScope for the created subgraph; defaults to class name.
 		Returns:
 			A pair containing:
 			- Output: A `2-D` tensor with shape `[batch_size, self.output_size]`.
@@ -56,13 +53,13 @@ class MACCell(tf.nn.rnn_cell.RNNCell):
 			empty_query = tf.fill([self.features["d_batch_size"], self.features["d_src_len"]], 0.0)
 
 			out_control_state, tap_question_attn = control_cell(self.args, self.features, 
-				inputs, in_control_state, self.question_state, self.question_tokens)
+				in_control_state, self.question_state, self.question_tokens)
 		
 			read, read_taps = read_cell(
 				self.args, self.features, self.vocab_embedding, out_control_state, 
 				self.question_tokens, self.question_state)
 			
-			output, finished = output_cell(self.args, self.features,
+			output = output_cell(self.args, self.features,
 				self.question_state, read, out_control_state)	
 		
 			out_state = out_control_state
@@ -71,7 +68,6 @@ class MACCell(tf.nn.rnn_cell.RNNCell):
 			#	have generic taps dict returned from the fns,
 			#	and make this just use get_taps to append the data
 			out_data  = [output, 
-				tf.cast(finished, tf.float32),
 				tap_question_attn,
 				tf.squeeze(read_taps.get("kb_node_attn", empty_attn), 2),
 				read_taps.get("kb_node_word_attn", empty_query),

@@ -44,14 +44,20 @@ def model_fn(features, labels, mode, params):
 	# Model for realz
 	# --------------------------------------------------------------------------
 
+	# Encode the input via biLSTM
 	question_tokens, question_state = encode_input(args, features, vocab_embedding)
 
-	logits, taps = execute_reasoning(args, 
-		features=features, 
-		question_state=question_state,
-		labels=labels,
-		question_tokens=question_tokens, 
-		vocab_embedding=vocab_embedding)
+	# Run the cell once to get its output
+	d_cell = MACCell(args, features, question_state, question_tokens, vocab_embedding)
+	d_cell_initial = d_cell.zero_state(dtype=tf.float32, batch_size=features["d_batch_size"])
+	cell_output, cell_state = d_cell(d_cell_initial)
+	logits = cell_output[0]
+
+	# Visualisations of what attention is doing
+	taps = {
+		key: cell_output[idx+1] for idx, key in enumerate(d_cell.get_taps().keys())
+	}
+
 
 	# --------------------------------------------------------------------------
 	# Calc loss
@@ -67,32 +73,7 @@ def model_fn(features, labels, mode, params):
 
 	if mode == tf.estimator.ModeKeys.TRAIN:
 		global_step = tf.train.get_global_step()
-
-		learning_rate = args["learning_rate"]
-
-		if args["use_lr_finder"]:
-			learning_rate = tf.train.exponential_decay(
-				1E-06, 
-				global_step,
-				decay_steps=1000, 
-				decay_rate=1.1)
-
-		elif args["use_lr_decay"]:
-			learning_rate = tf.train.exponential_decay(
-				args["learning_rate"], 
-				global_step,
-				decay_steps=10000, 
-				decay_rate=0.9)
-
-		if args["use_summary_scalar"]:
-			var = tf.trainable_variables()
-			gradients = tf.gradients(loss, var)
-			norms = [tf.norm(i, 2) for i in gradients if i is not None]
-
-			tf.summary.scalar("learning_rate", learning_rate, family="hyperparam")
-			tf.summary.scalar("grad_norm", tf.reduce_max(norms), family="hyperparam")
-
-		optimizer = tf.train.AdamOptimizer(learning_rate)
+		optimizer = tf.train.AdamOptimizer(args["learning_rate"])
 		train_op, gradients = minimize_clipped(optimizer, loss, args["max_gradient_norm"])
 
 	# --------------------------------------------------------------------------
@@ -125,6 +106,8 @@ def model_fn(features, labels, mode, params):
 		eval_metric_ops = {
 			"accuracy": tf.metrics.accuracy(labels=labels, predictions=predicted_labels),
 		}
+
+		# Add per class and per question type accuracy metrics
 
 		try:
 			with tf.gfile.GFile(args["question_types_path"]) as file:

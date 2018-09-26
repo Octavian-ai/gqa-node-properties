@@ -114,8 +114,6 @@ def get_args(extend=lambda parser:None, argv=None):
 	parser.add_argument('--disable-output-read', 		action='store_false', dest="use_output_read")
 	parser.add_argument('--disable-dynamic-decode', 	action='store_false', dest="use_dynamic_decode")
 	parser.add_argument('--enable-question-state', 		action='store_true', dest="use_question_state")
-	parser.add_argument('--enable-lr-finder', 			action='store_true',  dest="use_lr_finder")
-	parser.add_argument('--enable-lr-decay', 			action='store_true',  dest="use_lr_decay")
 
 	parser.add_argument('--enable-tf-debug', 			action='store_true',  dest="use_tf_debug")
 	parser.add_argument('--disable-summary-scalar', 	action='store_false', dest='use_summary_scalar')
