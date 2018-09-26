@@ -68,35 +68,23 @@ def predict(args, cmd_args):
 			emoji = "❌"
 			answer_part = f"{stylize(row['predicted_label'], bg(1))}, expected {row['actual_label']}"
 
-		iterations = len(row["question_word_attn"])
-
+		
 		print(emoji, " ", answer_part)
 
-		for i in range(iterations):
+		for control_head in row["question_word_attn"]:
+			print(' '.join(color_text(row["src"], control_head)))
 
-			finished = row['finished'][i]
-			print (f"{i}: {'FINISHED' if finished else 'not finished'}")
-			
-		
-			for control_head in row["question_word_attn"][i]:
-				print(f"{i}: " + ' '.join(color_text(row["src"], control_head)))
-			
-			read_head_part = ' '.join(color_text(args["kb_list"], row["read_head_attn"][i]))
-			print(f"{i}: read_head_attn: ",read_head_part)
-			print(f"{i}: read_attn_focus: ", row["read_head_attn_focus"][i])
+		noun = "kb_node"
+		db = [vocab.prediction_value_to_string(kb_row) for kb_row in row[f"{noun}s"]]
+		print(noun+"_attn: ",', '.join(color_text(db, row[f"{noun}_attn"])))
 
-			for idx0, noun in enumerate(args["kb_list"]):
-				if row["read_head_attn"][i][idx0] > ATTN_THRESHOLD:
-					db = [vocab.prediction_value_to_string(kb_row) for kb_row in row[f"{noun}s"]]
-					print(f"{i}: " + noun+"_attn: ",', '.join(color_text(db, row[f"{noun}_attn"][i])))
-
-					for idx, attn in enumerate(row[f"{noun}_attn"][i]):
-						if attn > ATTN_THRESHOLD:
-							print(f"{i}: " +noun+"_word_attn: ",', '.join(color_text(
-								vocab.prediction_value_to_string(row[f"{noun}s"][idx], True),
-								row[f"{noun}_word_attn"][i],
-								)
-							))
+		for idx, attn in enumerate(row[f"{noun}_attn"]):
+			if attn > ATTN_THRESHOLD:
+				print(noun+"_word_attn: ",', '.join(color_text(
+					vocab.prediction_value_to_string(row[f"{noun}s"][idx], True),
+					row[f"{noun}_word_attn"],
+					)
+				))
 		
 		hr()
 

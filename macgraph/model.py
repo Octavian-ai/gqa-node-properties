@@ -3,8 +3,6 @@ import tensorflow as tf
 import numpy as np
 import yaml
 
-from .cell import execute_reasoning
-from .encoder import encode_input
 from .cell import *
 from .util import *
 from .hooks import *
@@ -47,17 +45,25 @@ def model_fn(features, labels, mode, params):
 	# Encode the input via biLSTM
 	question_tokens, question_state = encode_input(args, features, vocab_embedding)
 
-	# Run the cell once to get its output
-	d_cell = MACCell(args, features, question_state, question_tokens, vocab_embedding)
-	d_cell_initial = d_cell.zero_state(dtype=tf.float32, batch_size=features["d_batch_size"])
-	cell_output, cell_state = d_cell(d_cell_initial)
-	logits = cell_output[0]
+	# The control state is focusing on one of the input tokens
+	out_control_state, tap_question_attn = control_cell(args, features, 
+		in_control_state, question_state, question_tokens)
 
-	# Visualisations of what attention is doing
+	# The read cell pulls out the relevant node property from the graph
+	read, read_taps = read_cell(
+		args, features, vocab_embedding, out_control_state, 
+		question_tokens, question_state)
+	
+	# The output cell transforms that property for output
+	logits = output_cell(args, features,
+		question_state, read, out_control_state)	
+
+	# For visualisation of what attention is doing (try running predict.py)
 	taps = {
-		key: cell_output[idx+1] for idx, key in enumerate(d_cell.get_taps().keys())
+		"question_word_attn": tap_question_attn,
+		"kb_node_attn": 	  read_taps["kb_node_attn"],
+		"kb_node_word_attn":  read_taps["kb_node_word_attn"],
 	}
-
 
 	# --------------------------------------------------------------------------
 	# Calc loss

@@ -5,7 +5,16 @@ import yaml
 import pathlib
 import tensorflow as tf
 
-from .minception import ACTIVATION_FNS
+def absu(x):
+	return tf.nn.relu(x) + tf.nn.relu(-x)
+
+ACTIVATION_FNS = {
+	"tanh": tf.tanh,
+	"relu": tf.nn.relu,
+	"sigmoid": tf.nn.sigmoid,
+	"abs": absu,
+	"id": tf.identity
+}
 
 global_args = {}
 
