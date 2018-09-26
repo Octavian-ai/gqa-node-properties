@@ -26,8 +26,6 @@ class MACCell(tf.nn.rnn_cell.RNNCell):
 			"question_word_attn": 	self.args["control_heads"] * self.features["d_src_len"],
 			"kb_node_attn": 		self.args["kb_node_width"] * self.args["embed_width"],
 			"kb_node_word_attn": 	self.args["kb_node_width"],
-			"read_head_attn": 		2 * self.args["read_heads"],
-			"read_head_attn_focus": 2 * self.args["read_heads"],
 		}
 
 
@@ -77,8 +75,6 @@ class MACCell(tf.nn.rnn_cell.RNNCell):
 				tap_question_attn,
 				tf.squeeze(read_taps.get("kb_node_attn", empty_attn), 2),
 				read_taps.get("kb_node_word_attn", empty_query),
-				read_taps.get("read_head_attn", empty_query),
-				read_taps.get("read_head_attn_focus", empty_query),
 			]
 
 			return out_data, out_state

@@ -85,12 +85,14 @@ def read_cell(args, features, vocab_embedding, in_control_state, in_question_tok
 		# Prepare and shape results
 		# --------------------------------------------------------------------------
 	
+		out_data = read
+	
 		# Residual skip connection
-		out_data = tf.concat([read, in_signal], -1)
+		# out_data = tf.concat([read, in_signal], -1)
 		
-		for i in range(args["read_layers"]):
-			out_data = tf.layers.dense(out_data, args["read_width"])
-			out_data = ACTIVATION_FNS[args["read_activation"]](out_data)
+		# for i in range(args["read_layers"]):
+		# 	out_data = tf.layers.dense(out_data, args["read_width"])
+		# 	out_data = ACTIVATION_FNS[args["read_activation"]](out_data)
 		
 		return out_data, taps
 
