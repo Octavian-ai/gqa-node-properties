@@ -22,7 +22,6 @@ standard_activations = {
 	"relu": tf.nn.relu,
 	"sigmoid": tf.nn.sigmoid,
 	"abs": absu,
-	"tanh_abs": lambda x: tf.concat([tf.tanh(x), absu(x)], axis=-1),
 	"id": tf.identity
 }
 
@@ -48,7 +47,11 @@ def mi_activation(tensor, tap=False, axis=1):
 			return t
 
 
-ACTIVATION_FNS = {**standard_activations, "mi": mi_activation}
+ACTIVATION_FNS = {
+	**standard_activations, 
+	"mi": mi_activation,
+	"tanh_abs": lambda x: tf.concat([tf.tanh(x), absu(x)], axis=-1),
+}
 
 def mi_activation_control(tensor, control=None, tap=False):
 	with tf.name_scope("mi_activation"):
