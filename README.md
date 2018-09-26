@@ -26,6 +26,8 @@ The neural network has a series of steps:
 - Finally, some dense layers tidy up and transform the output into a word token for output
 
 
+This code is a snapshot of [MacGraph](https://github.com/Octavian-ai/mac-graph), simplified down to just this task. The network takes inspiration from the [MACnet](https://arxiv.org/abs/1803.03067) architecture.
+
 ## Running
 
 First set up the pre-requisites:

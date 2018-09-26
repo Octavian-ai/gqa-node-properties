@@ -66,51 +66,32 @@ def read_cell(args, features, vocab_embedding, in_control_state, in_question_tok
 		# Read data
 		# --------------------------------------------------------------------------
 
-		in_signal = []
-		in_signal.append(in_control_state)
+		in_signal = in_control_state
+		
+		read, taps["kb_attn"], _, _ = read_from_table_with_embedding(
+			args, 
+			features, 
+			vocab_embedding, 
+			in_signal, 
+			noun="kb_node"
+		)
 
-		for j in range(args["read_heads"]):
-			for i in args["kb_list"]:
-
-				in_signal_to_head = tf.concat(in_signal, -1)
-				
-				read, taps[i+"_attn"], table, score_raw_total = read_from_table_with_embedding(
-					args, 
-					features, 
-					vocab_embedding, 
-					in_signal_to_head, 
-					noun=i
-				)
-
-				attn_focus.append(score_raw_total)
-
-				read_words = tf.reshape(read, [features["d_batch_size"], args[i+"_width"], args["embed_width"]])	
-			
-				d, taps[i+"_word_attn"] = attention_by_index(in_signal_to_head, read_words)
-				d = tf.concat([d, in_signal_to_head], -1)
-				d = tf.layers.dense(d, args["read_width"], activation=ACTIVATION_FNS[args["read_activation"]])
-				reads.append(d)
-				
-
-		reads = tf.stack(reads, axis=1)
-		reads, taps["read_head_attn"] = attention_by_index(in_question_state, reads)
-
+		read_words = tf.reshape(read, [features["d_batch_size"], args["kb_node_width"], args["embed_width"]])	
+		read, taps["kb_node_word_attn"] = attention_by_index(in_signal, read_words)
+		read = tf.concat([read, in_signal], -1)
+		read = tf.layers.dense(read, args["read_width"], activation=ACTIVATION_FNS[args["read_activation"]])
+		
 		# --------------------------------------------------------------------------
 		# Prepare and shape results
 		# --------------------------------------------------------------------------
-		
-		taps["read_head_attn_focus"] = tf.concat(attn_focus, -1)
-
+	
 		# Residual skip connection
-		out_data = tf.concat([reads] + in_signal + attn_focus, -1)
+		out_data = tf.concat([read, in_signal], -1)
 		
 		for i in range(args["read_layers"]):
 			out_data = tf.layers.dense(out_data, args["read_width"])
 			out_data = ACTIVATION_FNS[args["read_activation"]](out_data)
-			
-			if args["read_dropout"] > 0:
-				out_data = tf.nn.dropout(out_data, 1.0-args["read_dropout"])
-
+		
 		return out_data, taps
 
 

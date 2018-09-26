@@ -111,10 +111,8 @@ def get_args(extend=lambda parser:None, argv=None):
 	parser.add_argument('--kb-edge-max-len',         	type=int, default=40,   help="Maximum number of edges in kb")
 
 	parser.add_argument('--read-width',         		type=int, default=128,  help="Width of the read state output")
-	parser.add_argument('--read-heads',         		type=int, default=1,    help="Number of read heads for each knowledge base table")
 	parser.add_argument('--read-layers',         		type=int, default=1,    help="Number of read transformation layers")
 	parser.add_argument('--read-indicator-rows',        type=int, default=1,    help="Number of extra trainable rows")
-	parser.add_argument('--read-dropout',         		type=float, default=0.0,    help="Dropout on read heads")
 	parser.add_argument('--read-activation',			type=str, default="tanh_abs", choices=ACTIVATION_FNS.keys())
 	
 	parser.add_argument('--control-width',	           	type=int, default=None,	help="The width of control state")
@@ -134,7 +132,6 @@ def get_args(extend=lambda parser:None, argv=None):
 	parser.add_argument('--enable-lr-decay', 			action='store_true',  dest="use_lr_decay")
 
 	parser.add_argument('--enable-tf-debug', 			action='store_true',  dest="use_tf_debug")
-	parser.add_argument('--enable-comet', 				action='store_true',  dest="use_comet")
 	parser.add_argument('--disable-summary-scalar', 	action='store_false', dest='use_summary_scalar')
 	parser.add_argument('--disable-summary-image', 		action='store_false', dest='use_summary_image')
 
