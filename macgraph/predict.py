@@ -116,14 +116,11 @@ def predict(args, cmd_args):
 
 			confusion[emoji + " \texp:" + p["actual_label"] +" \tact:" + p["predicted_label"] + " \t" + p["type_string"]] += 1
 
-			if not cmd_args["correct_only"] or correct:
+			should_print = (cmd_args["correct_only"] and correct) or (cmd_args["wrong_only"] and not correct) or (not cmd_args["correct_only"] and not cmd_args["wrong_only"])
+
+			if should_print:
 				print_row(p)
 			
-
-	# print(f"\nConfusion matrix:")
-	# for k, v in confusion.most_common():
-	# 	print(f"{k}: {v}")
-
 
 
 if __name__ == "__main__":
@@ -134,6 +131,7 @@ if __name__ == "__main__":
 	parser.add_argument("--type-string-prefix",type=str,default=None)
 	parser.add_argument("--model-dir",type=str,required=True)
 	parser.add_argument("--correct-only",action='store_true')
+	parser.add_argument("--wrong-only",action='store_true')
 
 	cmd_args = vars(parser.parse_args())
 

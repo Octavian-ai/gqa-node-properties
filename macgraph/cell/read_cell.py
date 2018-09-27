@@ -61,7 +61,7 @@ def read_cell(args, features, vocab_embedding, in_control_state, in_question_tok
 			args["embed_width"]])	
 
 		# Extract one word using attention
-		read, taps["kb_node_word_attn"] = attention_by_index(in_control_state, read_words)
+		read, taps["kb_node_word_attn"] = attention_by_index(in_question_state, read_words)
 		
 		return read, taps
 
