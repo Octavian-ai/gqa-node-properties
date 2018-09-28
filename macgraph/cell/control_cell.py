@@ -18,7 +18,7 @@ def control_cell(args, features, in_question_tokens):
 	with tf.name_scope("control_cell"):
 
 		control_shape = [ features["d_batch_size"], args["control_width"] ]
-		question_token_width = args["input_width"]
+		question_token_width = args["embed_width"]
 		control_query_shape = [ features["d_batch_size"], question_token_width ]
 
 		attention_calls = []
