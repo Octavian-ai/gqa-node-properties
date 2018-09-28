@@ -52,7 +52,7 @@ def model_fn(features, labels, mode, params):
 	# The read cell pulls out the relevant node property from the graph
 	read, read_taps = read_cell(
 		args, features, vocab_embedding, out_control_state, 
-		question_tokens, question_state)
+		question_tokens)
 	
 	# The output cell transforms that property for output
 	logits = output_cell(args, features,

@@ -40,7 +40,7 @@ def read_from_table_with_embedding(args, features, vocab_embedding, in_signal, n
 			keys_len=keys_len)
 
 
-def read_cell(args, features, vocab_embedding, in_control_state, in_question_tokens, in_question_state):
+def read_cell(args, features, vocab_embedding, in_control_state, in_question_tokens):
 
 	with tf.name_scope("read_cell"):
 
