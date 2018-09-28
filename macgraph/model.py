@@ -48,13 +48,10 @@ def model_fn(features, labels, mode, params):
 	out_control_state, tap_question_attn = control_cell(args, features, question_tokens_emb)
 
 	# The read cell pulls out the relevant node property from the graph
-	read, read_taps = read_cell(
-		args, features, vocab_embedding, out_control_state, 
-		question_tokens_emb)
+	read, read_taps = read_cell(args, features, vocab_embedding, out_control_state, question_tokens_emb)
 	
 	# The output cell transforms that property for output
-	logits = output_cell(args, features,
-		question_state, read, out_control_state)	
+	logits = output_cell(args, features, question_state, read, out_control_state)	
 
 	# For visualisation of what attention is doing (try running predict.py)
 	taps = {
