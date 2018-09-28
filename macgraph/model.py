@@ -86,7 +86,9 @@ def model_fn(features, labels, mode, params):
 		var = tf.trainable_variables()
 		gradients = tf.gradients(loss, var)
 		norms = [tf.norm(i, 2) for i in gradients if i is not None]
-		tf.summary.histogram("grad_norm", norms)
+		tf.summary.scalar("grad_norm/max", tf.reduce_max(norms), family="hyperparam")
+		tf.summary.scalar("grad_norm/avg", tf.reduce_mean(norms), family="hyperparam")
+
 
 	# --------------------------------------------------------------------------
 	# Predictions

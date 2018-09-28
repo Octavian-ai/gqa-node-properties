@@ -44,15 +44,13 @@ def read_cell(args, features, vocab_embedding, in_control_state, in_question_tok
 
 	with tf.name_scope("read_cell"):
 
-		in_signal = tf.concat([in_control_state, in_question_state], -1)
-
 		taps = {} # For visualisation of attention
 
 		read, taps["kb_node_attn"], _, _ = read_from_table_with_embedding(
 			args, 
 			features, 
 			vocab_embedding, 
-			in_signal, 
+			in_control_state, 
 			noun="kb_node"
 		)
 
@@ -60,10 +58,12 @@ def read_cell(args, features, vocab_embedding, in_control_state, in_question_tok
 		read_words = tf.reshape(read, [
 			features["d_batch_size"], 
 			args["kb_node_width"], 
-			args["embed_width"]])	
+			args["embed_width"]])
+
+		extract_query = tf.layers.dense(in_question_state, args["kb_node_width"])
 
 		# Extract one word using attention
-		read, taps["kb_node_word_attn"] = attention_by_index(in_signal, read_words)
+		read, taps["kb_node_word_attn"] = attention_by_index(extract_query, read_words)
 		
 		return read, taps
 
