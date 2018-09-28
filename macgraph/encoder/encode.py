@@ -95,7 +95,8 @@ def encode_input(args, features, vocab_embedding):
 		if args["use_input_lstm"]:
 			return (question_tokens, question_state)
 		else:
-			return (src, tf.zeros(question_state_shape))
+			wider_src = tf.layers.dense(src, args["input_width"])
+			return (wider_src, tf.zeros(question_state_shape))
 
 
 
