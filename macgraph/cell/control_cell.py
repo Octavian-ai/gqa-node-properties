@@ -24,7 +24,10 @@ def control_cell(args, features, in_question_tokens):
 		attention_calls = []
 		
 		for i in range(args["control_heads"]):
-			question_token_query = tf.get_variable(f"control_query_{i}",  control_query_shape)
+			question_token_query = tf.get_variable(f"control_query_{i}", [1, question_token_width])
+			question_token_query = tf.tile(question_token_query, [features["d_batch_size"], 1])
+			question_token_query = dynamic_assert_shape(question_token_query, control_query_shape)
+			
 			a = attention(
 				table=in_question_tokens, 
 				query=question_token_query, 

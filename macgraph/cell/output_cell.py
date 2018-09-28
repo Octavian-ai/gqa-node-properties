@@ -4,7 +4,7 @@ import tensorflow as tf
 from ..args import ACTIVATION_FNS
 
 
-def output_cell(args, features, in_question_state, in_read, in_control_state):
+def output_cell(args, features, in_read, in_control_state):
 	with tf.name_scope("output_cell"):
 
 		v = tf.concat([in_read, in_control_state], -1)
