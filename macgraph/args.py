@@ -98,7 +98,7 @@ def get_args(extend=lambda parser:None, argv=None):
 	parser.add_argument('--read-width',         		type=int, default=128,  help="Width of the read state output")
 	
 	parser.add_argument('--control-width',	           	type=int, default=None,	help="The width of control state")
-	parser.add_argument('--control-heads',	           	type=int, default=2,	help="The number of control question-word attention heads")
+	parser.add_argument('--control-heads',	           	type=int, default=1,	help="The number of control question-word attention heads")
 	
 	parser.add_argument('--output-activation',			type=str, default="id", choices=ACTIVATION_FNS.keys())
 	parser.add_argument('--output-layers',				type=int, default=2)
