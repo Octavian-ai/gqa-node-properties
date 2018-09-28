@@ -76,11 +76,11 @@ def predict(args, cmd_args):
 
 		noun = "kb_node"
 		db = [vocab.prediction_value_to_string(kb_row) for kb_row in row[f"{noun}s"]]
-		print(noun+"_attn: ",', '.join(color_text(db, row[f"{noun}_attn"])))
+		print("node extract: ",', '.join(color_text(db, row[f"{noun}_attn"])))
 
 		for idx, attn in enumerate(row[f"{noun}_attn"]):
 			if attn > ATTN_THRESHOLD:
-				print(noun+"_word_attn: ",', '.join(color_text(
+				print("property extract: ",', '.join(color_text(
 					vocab.prediction_value_to_string(row[f"{noun}s"][idx], True),
 					row[f"{noun}_word_attn"],
 					)

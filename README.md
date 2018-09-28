@@ -47,9 +47,11 @@ You'll need to get a YAML file from [CLEVR-Graph](https://github.com/Octavian-ai
 
 `clevr-graph$ ./generate-station-properties.sh`
 
-You can then build it into TF records:
+You can then compile that into TF records:
 
 `python -m macgraph.input.build --gqa-path gqa-sa-small-100k.yaml --input-dir ./input_data/my_build`
+
+You can download pre-built data here:
 
 ### Visualising the predictions
 

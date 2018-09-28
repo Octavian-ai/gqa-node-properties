@@ -96,3 +96,18 @@ def deeep(tensor, width, depth=2, residual_depth=3, activation=tf.nn.tanh):
 			tensor = tf.layers.dense(tensor, width, activation=activation)
 
 		return tensor
+
+
+
+
+def download_data(args):
+	if not tf.gfile.Exists(args["train_input_path"]):
+		zip_path = "./tfrecords.zip"
+		print("Downloading training data (61mb)")
+		urllib.request.urlretrieve ("https://storage.googleapis.com/octavian-static/download/gqa-node-properties/tfrecords.zip", zip_path)
+
+		print("Unzipping...")
+		pathlib.Path(args["input_dir"]).mkdir(parents=True, exist_ok=True)
+		with zipfile.ZipFile(zip_path,"r") as zip_ref:
+			zip_ref.extractall(args["input_dir"])
+

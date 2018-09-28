@@ -82,6 +82,12 @@ def model_fn(features, labels, mode, params):
 		optimizer = tf.train.AdamOptimizer(args["learning_rate"])
 		train_op, gradients = minimize_clipped(optimizer, loss, args["max_gradient_norm"])
 
+		# Visualisation of training dynamics
+		var = tf.trainable_variables()
+		gradients = tf.gradients(loss, var)
+		norms = [tf.norm(i, 2) for i in gradients if i is not None]
+		tf.summary.histogram("grad_norm", norms)
+
 	# --------------------------------------------------------------------------
 	# Predictions
 	# --------------------------------------------------------------------------
