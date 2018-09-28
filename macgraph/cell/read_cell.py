@@ -60,7 +60,7 @@ def read_cell(args, features, vocab_embedding, in_control_state, in_question_tok
 			args["kb_node_width"], 
 			args["embed_width"]])
 
-		extract_query = tf.layers.dense(in_question_state, args["kb_node_width"])
+		extract_query = tf.layers.dense(tf.concat([in_question_state, in_control_state],-1), args["kb_node_width"])
 
 		# Extract one word using attention
 		read, taps["kb_node_word_attn"] = attention_by_index(extract_query, read_words)
