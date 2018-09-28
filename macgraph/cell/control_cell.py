@@ -4,7 +4,7 @@ import tensorflow as tf
 from ..util import *
 from ..attention import *
 
-def control_cell(args, features, in_question_state, in_question_tokens):
+def control_cell(args, features, in_question_tokens):
 	"""
 	Build a control cell
 
@@ -12,7 +12,6 @@ def control_cell(args, features, in_question_state, in_question_tokens):
 
 	Arguments:
 		- in_control_state.shape   = [batch_size, control_width]
-		- in_question_state.shape  = [batch_size, embed_width]
 		- in_question_tokens.shape = [batch_size, seq_len, embed_width]
 
 	"""
@@ -20,26 +19,18 @@ def control_cell(args, features, in_question_state, in_question_tokens):
 
 		control_shape = [ features["d_batch_size"], args["control_width"] ]
 		question_token_width = args["input_width"]
+		control_query_shape = [ features["d_batch_size"], question_token_width ]
 
 		attention_calls = []
-		queries = []
-
+		
 		for i in range(args["control_heads"]):
-			in_signal = tf.layers.dense(in_question_state, args["control_width"])
-			question_token_query = tf.layers.dense(in_signal, question_token_width)
-			question_token_query = tf.layers.dense(question_token_query, question_token_width)
-			question_token_query = dynamic_assert_shape(question_token_query, 
-				[ features["d_batch_size"], question_token_width ]
-			)
-			queries.append(question_token_query)
-
+			question_token_query = tf.get_variable(f"control_query_{i}",  control_query_shape)
 			a = attention(
 				table=in_question_tokens, 
 				query=question_token_query, 
 				key_width=question_token_width, 
 				keys_len=features["src_len"],
 			)
-
 			attention_calls.append(a)
 
 		control_out  = [i[0] for i in attention_calls]
@@ -52,7 +43,6 @@ def control_cell(args, features, in_question_state, in_question_tokens):
 		if control_out.shape[-1] != args["control_width"]:
 			control_out = tf.layers.dense(control_out, args["control_width"], name="resize_control_out")
 		
-		control_out = tf.nn.dropout(control_out, 1.0-args["control_dropout"])
 		control_out = dynamic_assert_shape(control_out, control_shape)
 
 		return control_out, tap_qw_attn

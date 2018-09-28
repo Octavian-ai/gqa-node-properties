@@ -7,7 +7,6 @@ from .cell import *
 from .util import *
 from .hooks import *
 from .input import *
-from .encoder import *
 
 def model_fn(features, labels, mode, params):
 
@@ -35,24 +34,23 @@ def model_fn(features, labels, mode, params):
 		[args["vocab_size"], args["embed_width"]],
 		tf.float32)
 
-	if args["use_summary_image"]:
-		tf.summary.image("vocab_embedding", tf.reshape(vocab_embedding,
-			[-1, args["vocab_size"], args["embed_width"], 1]))
+
+	tf.summary.image("vocab_embedding", tf.reshape(vocab_embedding,
+		[-1, args["vocab_size"], args["embed_width"], 1]))
 
 	# --------------------------------------------------------------------------
 	# Model for realz
 	# --------------------------------------------------------------------------
 
-	# Encode the input via biLSTM
-	question_tokens, question_state = encode_input(args, features, vocab_embedding)
+	question_tokens_emb = tf.nn.embedding_lookup(vocab_embedding, features["src"])
 
 	# The control state is focusing on one of the input tokens
-	out_control_state, tap_question_attn = control_cell(args, features, question_state, question_tokens)
+	out_control_state, tap_question_attn = control_cell(args, features, question_tokens_emb)
 
 	# The read cell pulls out the relevant node property from the graph
 	read, read_taps = read_cell(
 		args, features, vocab_embedding, out_control_state, 
-		question_tokens)
+		question_tokens_emb)
 	
 	# The output cell transforms that property for output
 	logits = output_cell(args, features,
