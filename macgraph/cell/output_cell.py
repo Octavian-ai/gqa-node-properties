@@ -7,7 +7,7 @@ from ..args import ACTIVATION_FNS
 def output_cell(args, features, in_read, in_control_state):
 	with tf.name_scope("output_cell"):
 
-		v = tf.concat([in_read, in_control_state], -1)
+		v = tf.concat([in_read], -1)
 		
 		for i in range(args["output_layers"]):
 			v = tf.layers.dense(v, args["output_classes"])
