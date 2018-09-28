@@ -52,6 +52,7 @@ def encode_input(args, features, vocab_embedding):
 
 		batch_size = features["d_batch_size"]
 		seq_len    = features["d_src_len"]
+		question_state_shape = [ features["d_batch_size"], args["input_width"] ]
 
 		# Trim down to the residual batch size (e.g. when at end of input data)
 		padded_src_len = features["src_len"][0 : batch_size]
@@ -88,10 +89,13 @@ def encode_input(args, features, vocab_embedding):
 		# Top layer, output layer
 		question_state = tf.concat( (fw_states[-1].c, bw_states[-1].c), axis=-1)
 		question_state = dynamic_assert_shape(question_state,
-			[ features["d_batch_size"], args["input_width"] ]
+			question_state_shape
 		)
 
-		return (question_tokens, question_state)
+		if args["use_input_lstm"]:
+			return (question_tokens, question_state)
+		else:
+			return (src, tf.zeros(question_state_shape))
 
 
 
