@@ -39,9 +39,6 @@ def generate_args_derivatives(args):
 
 	r["kb_list"] = ["kb_node"]
 
-	if args["save_checkpoints_steps"] is None and args["save_checkpoints_secs"] is None:
-		r["save_checkpoints_secs"] = 60 * 3
-
 	return r
 
 
@@ -83,9 +80,8 @@ def get_args(extend=lambda parser:None, argv=None):
 		
 	parser.add_argument('--max-gradient-norm',     		type=float, default=0.4)
 	parser.add_argument('--learning-rate',         		type=float, default=0.001)
-	parser.add_argument('--save-checkpoints-steps',		type=int,	default=None, help="Passed to RunConfig in tensorflow")
-	parser.add_argument('--save-checkpoints-secs',		type=int,	default=None, help="Passed to RunConfig in tensorflow")
-	parser.add_argument('--throttle-secs',				type=int,	default=300, help="Passed to RunConfig in tensorflow")
+	
+	parser.add_argument('--eval-every',					type=int,	default=300, help="How often to evaluate")
 
 
 	# --------------------------------------------------------------------------

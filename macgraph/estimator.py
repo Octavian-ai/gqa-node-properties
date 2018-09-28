@@ -8,8 +8,8 @@ def get_estimator(args):
 	run_config = tf.estimator.RunConfig(
 		model_dir=args["model_dir"],
 		tf_random_seed=3, # this doesn't seem to make training deterministic between fresh runs :(
-		save_checkpoints_steps=args["save_checkpoints_steps"],
-		save_checkpoints_secs=args["save_checkpoints_secs"],
+		save_checkpoints_steps=None,
+		save_checkpoints_secs=args["eval_every"],
 	)
 
 	return tf.estimator.Estimator(

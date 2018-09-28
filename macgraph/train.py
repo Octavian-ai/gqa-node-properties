@@ -37,7 +37,7 @@ def train(args):
 	
 	eval_spec  = tf.estimator.EvalSpec(
 		input_fn=gen_input_fn(args, "eval"),
-		throttle_secs=args["throttle_secs"])
+		throttle_secs=args["eval_every"])
 
 	tf.estimator.train_and_evaluate(estimator, train_spec, eval_spec)
 
