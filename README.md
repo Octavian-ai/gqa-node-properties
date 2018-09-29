@@ -45,14 +45,19 @@ pipenv shell
 
 You'll need to get a YAML file from [CLEVR-Graph](https://github.com/Octavian-ai/clevr-graph). 
 
+Either [download our pre-build YAML](https://storage.googleapis.com/octavian-static/download/gqa-node-properties/gqa-sp-small-100k.yaml) or create your own:
+
 `clevr-graph$ ./generate-station-properties.sh`
 
 You can then compile that into TF records:
 
 `python -m macgraph.input.build --gqa-path gqa-sa-small-100k.yaml --input-dir ./input_data/my_build`
 
-You can download pre-built data here:
+We provide [pre-compiled TF records](https://storage.googleapis.com/octavian-static/download/gqa-node-properties/tfrecords.zip) and also, the `train.py` script will automatically download and extract this zip file if it doesn't find any training data.
 
 ### Visualising the predictions
 
+`./predict.sh` will run the latest trained model in prediction mode. Alternatively you can run the python script yourself on any model directory you wish:
+
 `python -m macgraph.predict --model-dir ./output/my_model`
+
