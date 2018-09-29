@@ -18,7 +18,7 @@ Whilst this sort of property recall is trivial to perform in a database query la
 
 The system is a pure (deep) neural network implemented in TensorFlow. It takes a tokenized natural language string as the input, and returns a single word token as output.
 
-See [our medium article](https://medium.com/@DavidMack/graphs-and-neural-networks-reading-node-properties-2c91625980eb) for an in-depth explanation of how this network works.
+See [our medium article](https://medium.com/octavian-ai/graphs-and-neural-networks-reading-node-properties-2c91625980eb) for an in-depth explanation of how this network works.
 
 The system begins by transforming the input question into integer tokens, which are then embedded as vectors.
 
