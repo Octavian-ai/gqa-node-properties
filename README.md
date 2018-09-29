@@ -18,13 +18,15 @@ Whilst this sort of property recall is trivial to perform in a database query la
 
 The system is a pure (deep) neural network implemented in TensorFlow. It takes a tokenized natural language string as the input, and returns a single word token as output.
 
-The neural network has a series of steps:
-- Tokens are embedded into a word-embedding space
-- A biLSTM processes the sentence and returns a per-word vector and an overall sentence vector
-- A `control cell` performs attention over these word vectors and focusses on one, the `control signal`
-- A `read cell` takes this `control signal` and uses it to perform a database lookup. Specifically, this is done by using content-addressed attention on the table of nodes, then performing position-addressed attention on the resulting node data to extract the desired property
-- Finally, some dense layers tidy up and transform the output into a word token for output
+See [our medium article](https://medium.com/@DavidMack/graphs-and-neural-networks-reading-node-properties-2c91625980eb) for an in-depth explanation of how this network works.
 
+The system begins by transforming the input question into integer tokens, which are then embedded as vectors.
+
+Next, the control cell³ performs attention over the token vectors. This produces the control signal that is used by the subsequent cells to guide their actions.
+
+Then the read cell uses the control signal to extract a node from the graph node list. It then extracts one property of that node. This cell will be explained in more detail later.
+
+Finally, the output cell transforms the output of the read cell into an answer token (e.g. an integer that maps to an english word in our dictionary)
 
 This code is a snapshot of [MacGraph](https://github.com/Octavian-ai/mac-graph), simplified down to just this task. The network takes inspiration from the [MACnet](https://arxiv.org/abs/1803.03067) architecture.
 

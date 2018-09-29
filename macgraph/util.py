@@ -1,6 +1,14 @@
 
 import tensorflow as tf
 import math
+import urllib.request
+import pathlib
+import zipfile
+from colored import fg, bg, stylize
+
+# Block annoying warnings
+def hr():
+	print(stylize("---------------", fg("blue")))
 
 def assert_shape(tensor, shape, batchless=False):
 
@@ -111,4 +119,5 @@ def download_data(args):
 		pathlib.Path(args["input_dir"]).mkdir(parents=True, exist_ok=True)
 		with zipfile.ZipFile(zip_path,"r") as zip_ref:
 			zip_ref.extractall(args["input_dir"])
+		print("Data download complete!")
 

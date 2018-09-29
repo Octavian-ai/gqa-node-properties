@@ -8,6 +8,7 @@ from .estimator import get_estimator
 from .input import gen_input_fn
 from .args import *
 from .predict import predict
+from .util import download_data
 
 # Make TF be quiet
 import os
@@ -52,13 +53,17 @@ if __name__ == "__main__":
 	logger.setLevel(args["log_level"])
 	logging.getLogger("mac-graph").setLevel(args["log_level"])
 
+	# Make sure we have data to train on!
+	download_data(args)
+
 	# Info about the experiment, for the record
 	train_size = sum(1 for _ in tf.python_io.tf_record_iterator(args["train_input_path"]))
-	logger.info(args)
 	logger.info(f"Training on {train_size} records")
 
-	# DO IT!
+	hr()
 	train(args)
+
+	hr()
 	predict(args, args)
 
 

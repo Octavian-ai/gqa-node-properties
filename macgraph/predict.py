@@ -11,15 +11,11 @@ import os.path
 from .input.text_util import UNK_ID
 from .estimator import get_estimator
 from .input import *
+from .util import *
 
 import logging
 logger = logging.getLogger(__name__)
 
-# Block annoying warnings
-def hr():
-	print(stylize("---------------", fg("blue")))
-
-hr()
 
 DARK_GREY = 242
 WHITE = 255
@@ -53,7 +49,6 @@ def predict(args, cmd_args):
 
 	# Info about the experiment, for the record
 	tfr_size = sum(1 for _ in tf.python_io.tf_record_iterator(args["predict_input_path"]))
-	logger.info(args)
 	logger.info(f"Predicting on {tfr_size} input records")
 
 	# Actually do some work
@@ -137,6 +132,8 @@ if __name__ == "__main__":
 
 	with tf.gfile.GFile(os.path.join(cmd_args["model_dir"], "config.yaml"), "r") as file:
 		frozen_args = yaml.load(file)
+
+	hr()
 
 	predict(frozen_args, cmd_args)
 

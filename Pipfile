@@ -19,6 +19,7 @@ tableprint = "*"
 coloredlogs = "*"
 python-json-logger = "*"
 colored = "*"
+"urllib3" = "*"
 
 
 [requires]

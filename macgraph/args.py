@@ -37,8 +37,6 @@ def generate_args_derivatives(args):
 	if args["control_width"] is None:
 		r["control_width"] = args["embed_width"] * args["control_heads"]
 
-	r["kb_list"] = ["kb_node"]
-
 	return r
 
 

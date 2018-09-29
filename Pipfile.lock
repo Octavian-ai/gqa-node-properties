@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "360d2eb30ea9c74a5d66410c235fa194a59148914e3eace2113d15feae688e7c"
+            "sha256": "475038ce5056138eb3376b73d8587be6b8b42ac0808ac116061cd4db4936d468"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -90,6 +90,7 @@
                 "sha256:c4884a65654a7c45435063e14ae85280eb1f111d94e542396717ba9828c4337f",
                 "sha256:51ecb45f0add83c806c68e4b06106f90db260585b25ef2abfcda0bd95c0132fd"
             ],
+            "markers": "python_version < '3'",
             "version": "==3.1.1"
         },
         "gast": {
@@ -285,6 +286,13 @@
             ],
             "version": "==4.26.0"
         },
+        "urllib3": {
+            "hashes": [
+                "sha256:b5725a0bd4ba422ab0e66e89e030c806576753ea3ee08554382c14e685d117b5",
+                "sha256:a68ac5e15e76e7e5dd2b8f94007233e01effe3e50e8daddf69acfd81cb686baf"
+            ],
+            "version": "==1.23"
+        },
         "wcwidth": {
             "hashes": [
                 "sha256:f4ebe71925af7b40a864553f761ed559b43544f8f71746c2d756c7fe788ade7c",
@@ -301,10 +309,10 @@
         },
         "wheel": {
             "hashes": [
-                "sha256:80044e51ec5bbf6c894ba0bc48d26a8c20a9ba629f4ca19ea26ecfcf87685f5f",
-                "sha256:0a2e54558a0628f2145d2fc822137e322412115173e8a2ddbe1c9024338ae83c"
+                "sha256:3970f4130b7f8bf8167ca09215c8cc2f49a87c3d46506adfc60cb08c47ab0949",
+                "sha256:a26bc27230baaec9039972b7cb43db94b17c13e4d66a9ff6a4d46a0344c55c9a"
             ],
-            "version": "==0.31.1"
+            "version": "==0.32.0"
         }
     },
     "develop": {}
